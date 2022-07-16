@@ -8,9 +8,12 @@ export default function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [login, setLogin] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleSubmit=(e)=>{
+        setErrorMessage("");
+        setSuccessMessage("");
         // prevent the form from refreshing the whole page
         e.preventDefault();
         // set configurations to link to backend
@@ -32,10 +35,10 @@ export default function Login() {
                 });
             // redirect user to the auth page
             window.location.href = "/auth"
-            setLogin(true);
+            setSuccessMessage(result?.data?.message);
         })
-        .catch((error) => {error = new Error();})
-        
+        .catch((error) => {setErrorMessage(error?.response?.data?.message);})
+
     }
     return (
         <>
@@ -74,14 +77,12 @@ export default function Login() {
                     Submit
                 </Button>
 
-                {/* display success message */}
-                    {login ? (
+                {/* display error message */}
 
-                        <p className="text-success">You have Logged in Succesfully</p>
-                    
-                    ) : (
-                        <p className='text-danger'>You are Not Logged In</p>
-                    )}
+                {errorMessage && <p className="text-danger">{errorMessage}</p>}
+                {successMessage && <p className="text-success">{successMessage}</p>}
+                
+
             </Form>
         </>
     )

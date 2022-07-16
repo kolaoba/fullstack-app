@@ -7,15 +7,19 @@ export default function Register() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [register, setRegister] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleSubmit=(e)=>{
+        setErrorMessage("");
+        setSuccessMessage("");
         // prevent the form from refreshing the whole page
         e.preventDefault();
         // set configurations to link to backend
         const configuration = {
             method: "post",
-            url: "https://fullstack-auth-app1.herokuapp.com/register",
+            // url: "https://fullstack-auth-app1.herokuapp.com/register",
+            url: "http://localhost:8080/register",
             data: {
                 email,
                 password,
@@ -24,8 +28,8 @@ export default function Register() {
 
         // make the API call
         axios(configuration)
-        .then((result) => {setRegister(true);})
-        .catch((error) => {error = new Error();})
+        .then((result) => {setSuccessMessage(result?.data?.message);})
+        .catch((error) => {setErrorMessage(error?.response?.data?.message);})
     }
     return (
         <>
@@ -64,14 +68,11 @@ export default function Register() {
                 Submit
             </Button>
 
-            {/* display success message */}
-                {register ? (
+            {/* display error message */}
 
-                    <p className="text-success">You are Registered Succesfully</p>
+                {errorMessage && <p className="text-danger">{errorMessage}</p>}
+                {successMessage && <p className="text-success">{successMessage}</p>}
                 
-                ): (
-                    <p className='text-danger'>You are Not Registered</p>
-                )}
 
         </Form>
         </>
