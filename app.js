@@ -42,12 +42,22 @@ app.get("/", (request, response, next) => {
 
 // creating a register endpoint
 app.post("/register", (request, response) => {
+
+const { email, password } = request.body || {}
+
+  const existingUser = User.findOne({ email })
+  if(existingUser) {
+    response.status(404).send({
+      message: "Email already exists"
+    }) 
+    return
+  }
   // hash the password
   const nSaltRounds = 10
-  bcrypt.hash(request.body.password, nSaltRounds)
+  bcrypt.hash(password, nSaltRounds)
   .then((hashedPassword) => {
     const user = new User({
-      email: request.body.email,
+      email,
       password: hashedPassword,
     });
 
@@ -78,11 +88,14 @@ app.post("/register", (request, response) => {
 
 // creating login endpoint
 app.post("/login", (request, response) => {
+  const { email, password } = request.body || {}
+
+
   // check if email exists
-  User.findOne({ email: request.body.email })
+  User.findOne({ email })
   // if email exists
   .then((user) => {
-    bcrypt.compare(request.body.password, user.password)
+    bcrypt.compare(password, user.password)
     // if passwords match
   .then((passwordCheck) => {
 
