@@ -41,23 +41,22 @@ app.get("/", (request, response, next) => {
 
 
 // creating a register endpoint
-app.post("/register", (request, response) => {
+app.post("/register", async (request, response) => {
 
 const { email, password } = request.body || {}
 
-  const existingUser = User.findOne({ email })
+  const existingUser = await User.findOne({ email })
   if(existingUser) {
-    response.status(404).send({
+    return response.status(404).send({
       message: "Email already exists"
     }) 
-    return
   }
   // hash the password
   const nSaltRounds = 10
   bcrypt.hash(password, nSaltRounds)
   .then((hashedPassword) => {
     const user = new User({
-      email,
+      email: email,
       password: hashedPassword,
     });
 
