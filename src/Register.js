@@ -18,8 +18,8 @@ export default function Register() {
         // set configurations to link to backend
         const configuration = {
             method: "post",
-            // url: "https://fullstack-auth-app1.herokuapp.com/register",
-            url: "http://localhost:8080/register",
+            url: "https://fullstack-auth-app1.herokuapp.com/register",
+            // url: "http://localhost:8080/register",
             data: {
                 email,
                 password,
